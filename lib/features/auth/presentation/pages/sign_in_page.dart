@@ -43,7 +43,10 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                     children: [
                       Text(
                         'Welcome back',
-                        style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineSmall
+                            ?.copyWith(fontWeight: FontWeight.bold),
                       ),
                       const SizedBox(height: 8),
                       Text(
@@ -59,28 +62,36 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                       const SizedBox(height: 16),
                       TextField(
                         controller: _passwordController,
-                        decoration: const InputDecoration(labelText: 'Password'),
+                        decoration:
+                            const InputDecoration(labelText: 'Password'),
                         obscureText: true,
                       ),
                       const SizedBox(height: 24),
-                      if (authState.status == AuthStatus.failure && authState.message != null)
+                      if (authState.status == AuthStatus.failure &&
+                          authState.message != null)
                         Padding(
                           padding: const EdgeInsets.only(bottom: 12),
                           child: Text(
                             authState.message!,
-                            style: TextStyle(color: Theme.of(context).colorScheme.error),
+                            style: TextStyle(
+                                color: Theme.of(context).colorScheme.error),
                           ),
                         ),
                       PrimaryButton(
-                        label: authState.status == AuthStatus.loading ? 'Signing in...' : 'Sign in',
+                        label: authState.status == AuthStatus.loading
+                            ? 'Signing in...'
+                            : 'Sign in',
                         onPressed: authState.status == AuthStatus.loading
                             ? () {}
                             : () async {
-                                await ref.read(authControllerProvider.notifier).signIn(
-                                  email: _emailController.text.trim(),
-                                  password: _passwordController.text,
-                                );
-                                if (ref.read(authControllerProvider).status == AuthStatus.authenticated) {
+                                await ref
+                                    .read(authControllerProvider.notifier)
+                                    .signIn(
+                                      email: _emailController.text.trim(),
+                                      password: _passwordController.text,
+                                    );
+                                if (ref.read(authControllerProvider).status ==
+                                    AuthStatus.authenticated) {
                                   if (context.mounted) {
                                     context.go('/dashboard');
                                   }
@@ -89,8 +100,9 @@ class _SignInPageState extends ConsumerState<SignInPage> {
                         icon: Icons.login,
                       ),
                       const SizedBox(height: 16),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      Wrap(
+                        spacing: 8,
+                        runSpacing: 8,
                         children: [
                           TextButton(
                             onPressed: () => context.go('/sign-up'),

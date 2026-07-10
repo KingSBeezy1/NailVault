@@ -8,6 +8,10 @@ class AuthRepository {
   final SupabaseService _supabaseService;
 
   User? get currentUser {
+    if (!_supabaseService.isInitialized) {
+      return null;
+    }
+
     try {
       return _supabaseService.client.auth.currentUser;
     } on Exception catch (error) {
@@ -15,7 +19,8 @@ class AuthRepository {
     }
   }
 
-  Future<User> signInWithPassword({required String email, required String password}) async {
+  Future<User> signInWithPassword(
+      {required String email, required String password}) async {
     _ensureConfigured();
 
     final response = await _supabaseService.client.auth.signInWithPassword(
@@ -30,7 +35,8 @@ class AuthRepository {
     return response.user!;
   }
 
-  Future<User> signUpWithPassword({required String email, required String password}) async {
+  Future<User> signUpWithPassword(
+      {required String email, required String password}) async {
     _ensureConfigured();
 
     final response = await _supabaseService.client.auth.signUp(
@@ -39,7 +45,8 @@ class AuthRepository {
     );
 
     if (response.user == null) {
-      throw const AppException(message: 'Unable to create your account right now.');
+      throw const AppException(
+          message: 'Unable to create your account right now.');
     }
 
     return response.user!;
@@ -57,7 +64,8 @@ class AuthRepository {
 
   void _ensureConfigured() {
     if (!_supabaseService.isInitialized) {
-      throw const AppException(message: 'Supabase is not configured for this app yet.');
+      throw const AppException(
+          message: 'Supabase is not configured for this app yet.');
     }
   }
 }
