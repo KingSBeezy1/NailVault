@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:nailvault/core/services/supabase_service.dart';
 
 class StorageService {
@@ -15,7 +16,8 @@ class StorageService {
     required XFile imageFile,
   }) async {
     if (!_supabaseService.isInitialized) {
-      throw Exception('Storage is not available offline yet. Photo will be queued.');
+      throw Exception(
+          'Storage is not available offline yet. Photo will be queued.');
     }
 
     final fileName = '${DateTime.now().millisecondsSinceEpoch}.jpg';
@@ -25,12 +27,13 @@ class StorageService {
     final bytes = await file.readAsBytes();
 
     await _supabaseService.client.storage.from(bucketName).uploadBinary(
-      path,
-      bytes,
-      fileOptions: FileOptions(contentType: 'image/jpeg'),
-    );
+          path,
+          bytes,
+          fileOptions: FileOptions(contentType: 'image/jpeg'),
+        );
 
-    final url = _supabaseService.client.storage.from(bucketName).getPublicUrl(path);
+    final url =
+        _supabaseService.client.storage.from(bucketName).getPublicUrl(path);
     return url;
   }
 
@@ -40,7 +43,9 @@ class StorageService {
     }
 
     try {
-      await _supabaseService.client.storage.from(bucketName).remove([storagePath]);
+      await _supabaseService.client.storage
+          .from(bucketName)
+          .remove([storagePath]);
     } catch (_) {
       // Silently fail if deletion is not available
     }

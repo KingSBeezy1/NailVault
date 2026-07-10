@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:nailvault/features/clients/domain/models/client_model.dart';
-import 'package:nailvault/features/clients/data/repositories/client_repository.dart';
+import 'package:nailvault/features/clients/presentation/providers/clients_provider.dart';
 import 'package:nailvault/features/shared/widgets/primary_button.dart';
 
 class AddClientPage extends ConsumerStatefulWidget {
@@ -56,11 +56,19 @@ class _AddClientPageState extends ConsumerState<AddClientPage> {
         id: 'client-${DateTime.now().millisecondsSinceEpoch}',
         firstName: _firstNameController.text.trim(),
         lastName: _lastNameController.text.trim(),
-        phoneNumber: _phoneController.text.trim().isEmpty ? null : _phoneController.text.trim(),
-        email: _emailController.text.trim().isEmpty ? null : _emailController.text.trim(),
-        instagramUsername: _instagramController.text.trim().isEmpty ? null : _instagramController.text.trim(),
+        phoneNumber: _phoneController.text.trim().isEmpty
+            ? null
+            : _phoneController.text.trim(),
+        email: _emailController.text.trim().isEmpty
+            ? null
+            : _emailController.text.trim(),
+        instagramUsername: _instagramController.text.trim().isEmpty
+            ? null
+            : _instagramController.text.trim(),
         birthday: _birthday,
-        notes: _notesController.text.trim().isEmpty ? null : _notesController.text.trim(),
+        notes: _notesController.text.trim().isEmpty
+            ? null
+            : _notesController.text.trim(),
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
@@ -69,7 +77,7 @@ class _AddClientPageState extends ConsumerState<AddClientPage> {
       await repository.createClient(client);
 
       if (mounted) {
-        context.pop();
+        Navigator.of(context).pop();
       }
     } catch (e) {
       if (mounted) {
@@ -122,7 +130,9 @@ class _AddClientPageState extends ConsumerState<AddClientPage> {
                 decoration: const InputDecoration(labelText: 'Email'),
                 keyboardType: TextInputType.emailAddress,
                 validator: (value) {
-                  if (value != null && value.isNotEmpty && !value.contains('@')) {
+                  if (value != null &&
+                      value.isNotEmpty &&
+                      !value.contains('@')) {
                     return 'Enter a valid email';
                   }
                   return null;
@@ -131,7 +141,7 @@ class _AddClientPageState extends ConsumerState<AddClientPage> {
               const SizedBox(height: 16),
               TextFormField(
                 controller: _instagramController,
-                decoration: InputDecoration(
+                decoration: const InputDecoration(
                   labelText: 'Instagram Username',
                   prefixText: '@',
                 ),
@@ -139,7 +149,9 @@ class _AddClientPageState extends ConsumerState<AddClientPage> {
               const SizedBox(height: 16),
               ListTile(
                 contentPadding: EdgeInsets.zero,
-                title: Text(_birthday != null ? _birthday.toString().split(' ')[0] : 'Select Birthday'),
+                title: Text(_birthday != null
+                    ? _birthday.toString().split(' ')[0]
+                    : 'Select Birthday'),
                 onTap: () async {
                   final date = await showDatePicker(
                     context: context,
