@@ -1,0 +1,36 @@
+name: iOS Build
+
+on:
+  workflow_dispatch:      # lets you trigger it manually from the Actions tab
+  push:
+    branches: [ main ]    # also runs automatically on every push to main
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build iOS (no code signing)
+        run: flutter build ios --release --no-codesign
+
+      - name: Zip the build output
+        run: |
+          cd build/ios/iphoneos
+          zip -r NailVault-unsigned.zip Runner.app
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NailVault-ios-build
+          path: build/ios/iphoneos/NailVault-unsigned.zip
